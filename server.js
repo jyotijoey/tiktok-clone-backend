@@ -7,7 +7,6 @@ import Videos from "./db.Model.js";
 import cors from "cors";
 
 
-
 //app config
 const app = express();
 const PORT= process.env.PORT || 9000;
@@ -15,7 +14,9 @@ const PORT= process.env.PORT || 9000;
 //middleware
 
 app.use(express.json());
+app.use(express.urlencoded());
 app.use(cors());
+
 
 //db config
 const connectionURL= process.env.KEY;
@@ -45,9 +46,20 @@ app.get("/v2/posts", (req, res) => {
 })
 
 app.post("/v2/posts", (req, res) => {
-    const dbVideos= req.body;
+    
+    const defaultInput ={
+    likes: "0",
+    messages: "0",
+    shares:"0"
+    }
+    const input= req.body;
+    const post= {...input, ...defaultInput};
+    console.log(req);
 
-    Videos.create(dbVideos, (err, data) => {
+    // const dbVideos= req.body;
+    // console.log(req);
+
+    Videos.create(post, (err, data) => {
         if(err){
             res.status(500).send(err);
             console.log(err);
